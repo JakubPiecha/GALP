@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
+    'users.apps.UsersConfig',
     'debug_toolbar',
     'crispy_forms',
     'crispy_bootstrap5',
@@ -143,3 +144,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 INTERNAL_IPS = [
     '127.0.0.1',
     ]
+AUTH_USER_MODEL = 'users.CustomUser'
+
+LOGIN_REDIRECT_URL = 'home:home'
+LOGOUT_REDIRECT_URL = 'home:home'

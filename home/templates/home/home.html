@@ -6,6 +6,14 @@
 {% endblock %}
 
 {% block container %}
+<h1>Homepage</h1>
+    {% if user.is_authenticated %}
 
-<h1>Siema</h1>
+    Hi {{ user.username }}
+    {%  else %}
+    <p>Jesteś nie zalogowany</p>
+    <a href="{% url 'login' %}" class="btn btn-primary">Zaloguj się</a>
+    {% endif %}
+
+
 {% endblock %}
