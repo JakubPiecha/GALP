@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+from teams.models import Team
 # Create your models here.
 
 
@@ -12,16 +12,8 @@ class Player(models.Model):
         return self.fullname
 
 
-class Team(models.Model):
-    team_name = models.CharField(max_length=60, unique=True)
-    owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
-
-    def __str__(self):
-        return self.team_name
-
-
 class Competition(models.Model):
-    competition_name = models.CharField(max_length=60)
+    competition_name = models.CharField(max_length=60, unique=True)
     teams = models.ManyToManyField(Team)
     type = models.IntegerField(choices={(1, 'League Season'), (2, 'Cup')})
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)

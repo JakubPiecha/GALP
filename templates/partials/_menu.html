@@ -31,15 +31,26 @@
                         Rozgrywki
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                        <li><a class="dropdown-item active" href="{% url 'competitions:competition_list' %}">Lista rozgrywek</a></li>
+                        <li><a class="dropdown-item active" href="{% url 'competitions:competition_list' %}">Lista
+                            rozgrywek</a></li>
                         {% if perms.competitions.view_competitions %}
-                        <li><a class="dropdown-item" href="{% url 'competitions:competition_create' %}">Dodaj rozgrywki</a></li>
+                            <li><a class="dropdown-item" href="{% url 'competitions:competition_create' %}">Dodaj
+                                rozgrywki</a></li>
                         {% endif %}
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown" >
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Zespoły
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                        <li><a class="dropdown-item active" href="{%  url 'teams:teams_list' %}">Lista
+                            Zespołów</a></li>
+                        {% if perms.teams.view_teams %}
+                            <li><a class="dropdown-item" href="{% url 'teams:team_add' %}">Dodaj
+                                Zespół</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </ul>

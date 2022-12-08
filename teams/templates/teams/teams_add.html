@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Dodaj zespół
+{% endblock %}
+
+{% block container %}
+    <form action="" method="post">
+    {% csrf_token %}
+    <h2>Dodawanie Zespołu</h2>
+
+    {{ form|crispy }}
+
+    <button type="submit" class="btn btn-success">Dodaj drużynę</button>
+    </form>
+
+{% endblock %}
+

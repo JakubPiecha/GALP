@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lista zespołów
+{% endblock %}
+
+{% block container %}
+    <h1 class="modal-title">Lista zespołów</h1>
+    {% for team in teams %}
+        <h2><a href="{% url 'teams:team_detail' pk=team.pk %}"
+               class="link-success">{{ forloop.counter }}. {{ team.team_name }}</a>
+            {% if perms.teams.view_teams %}
+                <a href="{% url 'teams:team_edit' pk=team.pk %}" class="btn btn-info">Edytuj</a>
+                <a href="{%  url 'teams:team_delete' pk=team.pk %}" class="btn btn-danger">Usuń</a>
+            {% endif %}
+        </h2>
+    {% empty %}
+        <h3> - Jeszcze nie dodano żadnych zespołów</h3>
+    {% endfor %}
+    </ul>
+
+{% endblock %}
+
