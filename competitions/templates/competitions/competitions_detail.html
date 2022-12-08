@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Szczegóły
+{% endblock %}
+
+{% block container %}
+
+    <h1>{{ competition.competition_name }}</h1>
+<div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-dark"><a href="#" class="btn btn-dark"> Tabela </a></button>
+  <button type="button" class="btn btn-dark"><a href="#" class="btn btn-dark"> Terminarz </a></button>
+  <button type="button" class="btn btn-dark"><a href="#" class="btn btn-dark"> Statystyki </a></button>
+</div>
+
+{% endblock %}

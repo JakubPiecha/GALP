@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home.apps.HomeConfig',
     'users.apps.UsersConfig',
+    'competitions.apps.CompetitionsConfig',
     'debug_toolbar',
     'crispy_forms',
     'crispy_bootstrap5',

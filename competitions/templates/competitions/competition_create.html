@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Tworzenie rozgrywek
+{% endblock %}
+{% block container %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>Tworzenie rozgrywek</h2>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Dodaj rozgrywki</button>
+    </form>
+
+
+
+{% endblock %}
+

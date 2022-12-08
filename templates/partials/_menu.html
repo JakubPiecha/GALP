@@ -20,11 +20,31 @@
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'logout' %}">Wyloguj się</a>
+                        <a class="nav-link active" aria-current="page"
+                           href="{% url 'logout' %}">Wyloguj {{ user.username }}</a>
                     </li>
 
                 {% endif %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Rozgrywki
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                        <li><a class="dropdown-item active" href="{% url 'competitions:competition_list' %}">Lista rozgrywek</a></li>
+                        {% if perms.competitions.view_competitions %}
+                        <li><a class="dropdown-item" href="{% url 'competitions:competition_create' %}">Dodaj rozgrywki</a></li>
+                        {% endif %}
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#">Separated link</a></li>
+                    </ul>
+                </div>
             </ul>
+
         </div>
     </div>
 </nav>
+
