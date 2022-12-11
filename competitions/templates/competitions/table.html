@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Szczegóły
+    Terminarz rozgrywek
 {% endblock %}
 
 {% block container %}
-
-
     <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-dark"><a href="{% url 'competitions:table' pk=competition.pk %}"
                                                       class="btn btn-dark"> Tabela </a></button>
@@ -15,19 +13,32 @@
         <button type="button" class="btn btn-dark"><a href="#" class="btn btn-dark"> Statystyki </a></button>
     </div>
 
-    <h1> Rozgrywki: {{ competition.competition_name }}</h1>
-    <table class="table table-dark  table-striped">
+
+
+    <h1 class="modal-title">Tabela rozgrywek: {{ competition.competition_name }} </h1>
+
+    <table class="table table-dark table-striped ">
         <tr>
-            <th>Nr</th>
-            <th>Nazwa zespołu</th>
-            <th>Właściciel Zespołu</th>
+            <th>Pozycja</th>
+            <th>Nazwa Drużyny</th>
+            <th>Liczba spotkań</th>
+            <th>Bramki strzelone</th>
+            <th>Bramki stracone</th>
+            <th>Punkty</th>
         </tr>
-        {% for team in competition.teams.all %}
+        {% for team in table_league %}
             <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ team.team_name }}</td>
-                <td>{{ team.owner }}</td>
-            </tr>
+            <td>{{ forloop.counter }}.</td>
+            <td>{{ team }} </td>
+            {% for key, value in table.items %}
+                {% if team == key %}
+                    {% for key, value in value.items %}
+                        <td>{{ value }} </td>
+                    {% endfor %}
+                {% endif %}
+
+
+            {% endfor %}
         {% endfor %}
     </table>
 

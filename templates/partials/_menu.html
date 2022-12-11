@@ -39,17 +39,31 @@
                         {% endif %}
                     </ul>
                 </div>
-                <div class="dropdown" >
+                <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
                             data-bs-toggle="dropdown" aria-expanded="false">
                         Zespoły
                     </button>
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                        <li><a class="dropdown-item active" href="{%  url 'teams:teams_list' %}">Lista
+                        <li><a class="dropdown-item active" href="{% url 'teams:teams_list' %}">Lista
                             Zespołów</a></li>
                         {% if perms.teams.view_teams %}
                             <li><a class="dropdown-item" href="{% url 'teams:team_add' %}">Dodaj
                                 Zespół</a></li>
+                            <li><a class="dropdown-item" href="{% url 'teams:add_player_to_team' %}">Dodaj zawodnika do zespołu</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2"
+                            data-bs-toggle="dropdown" aria-expanded="false">Zawodnicy
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
+                        <li><a class="dropdown-item active" href="{% url 'players:player_list' %}">Lista
+                            Zawodników</a></li>
+                        {% if perms.players.view_players %}
+                            <li><a class="dropdown-item" href="{% url 'players:player_add' %}">Dodaj Zawodnika</a></li>
                         {% endif %}
                     </ul>
                 </div>

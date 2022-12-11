@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+    Kasowanie zespołu
+{% endblock %}
+{% block container %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>Kasowanie zespołu</h2>
+        <h3 class="alert-danger">Czy na pewno chcesz usunąć zawodnika z zespołu {{ playerinteam.player }}</h3>
+        <button type="button" class="btn btn-warning">
+            <a href="{% url 'teams:teams_list' %}">Anuluj</a>
+        </button>
+        <button type="submit" class="btn btn-danger">Potwierdź</button>
+    </form>
+
+
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Edycja danych
+{% endblock %}
+
+{% block container %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>Edytowanie danych zawodnika</h2>
+
+        {{ form|crispy }}
+
+        <button type="submit" class="btn btn-success">Zapisz zmiany</button>
+    </form>
+
+{% endblock %}

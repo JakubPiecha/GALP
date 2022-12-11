@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Terminarz rozgrywek
+{% endblock %}
+
+{% block container %}
+    <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-dark"><a href="{% url 'competitions:table' pk=competition.pk %}"
+                                                      class="btn btn-dark"> Tabela </a></button>
+        <button type="button" class="btn btn-dark"><a href="{% url 'competitions:schedule_list' pk=competition.pk %}"
+                                                      class="btn btn-dark"> Terminarz </a></button>
+        <button type="button" class="btn btn-dark"><a href="#" class="btn btn-dark"> Statystyki </a></button>
+    </div>
+
+
+    <h1 class="modal-title">Terminarz rozgrywek: {{ competition.competition_name }}</h1>
+
+    <table class="table table-dark table-striped">
+        <tr>
+            <th>Nr</th>
+            <th>Data</th>
+            <th>Gospodarz</th>
+            <th>Gość</th>
+            <th>Bramki Gospodarzy</th>
+            <th>Bramki Gości</th>
+            {% if perms.competitions.view_match %}
+                <th>Dodaj wynik</th>
+                <th>Usuń spotkanie</th>
+            {% endif %}
+        </tr>
+        {% for match in competition.match_set.all %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{% if match.match_date == None %}Brak Daty{% else %}{{ match.match_date }}{% endif %}</td>
+                <td>{{ match.home_team }}</td>
+                <td>{{ match.away_team }}</td>
+                <td>{% if match.home_goal == None %} - {% else %} {{ match.home_goal }}{% endif %} </td>
+                <td> {% if match.away_goal == None %} - {% else %} {{ match.away_goal }}{% endif %} </td>
+                {% if perms.competitions.view_match %}
+                    <td><a href="{% url 'competitions:edit_match' pk=match.pk %}" class="btn btn-info">Edytuj</a></td>
+                    <td><a href="{% url 'competitions:delete_match' pk=match.pk %}" class="btn btn-danger">Usuń</a></td>
+                {% endif %}
+            </tr>
+        {% empty %}
+            <h3> - Jeszcze nie dodano żadnych meczy</h3>
+        {% endfor %}
+    </table>
+    {% if perms.competitions.view_match %}
+        <a href="{% url 'competitions:add_match' %}" class="btn btn-success">Dodaj mecz</a>
+    {% endif %}
+{% endblock %}

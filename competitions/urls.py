@@ -9,6 +9,10 @@ urlpatterns = [
     path('<int:pk>/', views.CompetitionDetailView.as_view(), name='competition_detail'),
     path('create/', views.CompetitionCreateView.as_view(), name='competition_create'),
     path('edit/<int:pk>/', views.CompetitionUpdateView.as_view(), name='competition_edit'),
+    path('schedule/<int:pk>/', views.MatchScheduleView.as_view(), name='schedule_list'),
+    path('table/<int:pk>/', views.CompetitionTableLeagueView.as_view(), name='table'),
+    path('add/match/', views.MatchCreateView.as_view(), name='add_match'),
+    path('edit/match/<int:pk>/', views.MatchUpdateView.as_view(), name='edit_match'),
+    path('delete/match/<int:pk>/', views.MatchDeleteView.as_view(), name='delete_match'),
     path('delete/<int:pk>/', views.CompetitionDeleteView.as_view(), name='competition_delete'),
-
 ]

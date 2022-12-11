@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}
+    Edycja meczu
+{% endblock %}
+{% block container %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>Edycja meczu</h2>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Edytuj spotkanie</button>
+    </form>
+
+
+
+{% endblock %}
+

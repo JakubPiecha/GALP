@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
     'teams.apps.TeamsConfig',
     'users.apps.UsersConfig',
+    'players.apps.PlayersConfig',
     'competitions.apps.CompetitionsConfig',
     'debug_toolbar',
     'crispy_forms',
