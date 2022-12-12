@@ -9,7 +9,7 @@
     <h1>Informacje o zawodniku: </h1>
 
     <h2> Zawodnik: {{ player.fullname }}</h2>
-    <h2> Data Urodzenia: {{ players.date_of_birth }}</h2>
+    <h2> Data Urodzenia: {{ player.date_of_birth }}</h2>
     <H3>Historia występów:</H3>
     {%  for team in player.playerinteam_set.all %}
     <h4>{{ forloop.counter }}. W {{ team.team }} w rozgrywkach {{ team.season }}

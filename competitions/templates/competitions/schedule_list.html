@@ -10,7 +10,8 @@
                                                       class="btn btn-dark"> Tabela </a></button>
         <button type="button" class="btn btn-dark"><a href="{% url 'competitions:schedule_list' pk=competition.pk %}"
                                                       class="btn btn-dark"> Terminarz </a></button>
-        <button type="button" class="btn btn-dark"><a href="#" class="btn btn-dark"> Statystyki </a></button>
+        <button type="button" class="btn btn-dark"><a href="{% url 'competitions:competition_list' %}"
+                                                      class="btn btn-dark"> Lista Rozgrywek </a></button>
     </div>
 
 
