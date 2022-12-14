@@ -19,7 +19,7 @@ class PlayerCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'players/players_add.html'
     success_url = reverse_lazy('players:player_list')
     login_url = reverse_lazy('players:player_list')
-    permission_required = 'player.add_player'
+    permission_required = 'players.add_player'
 
 
 class PlayerDetailView(DetailView):
@@ -34,11 +34,11 @@ class PlayerUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'players/players_edit.html'
     success_url = reverse_lazy('players:player_list')
     login_url = reverse_lazy('players:player_list')
-    permission_required = 'player.change_player'
+    permission_required = 'players.change_player'
 
 
 class PlayerDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Player
     success_url = reverse_lazy('players:player_list')
     login_url = reverse_lazy('players:player_list')
-    permission_required = 'player.delete_player'
+    permission_required = 'players.delete_player'

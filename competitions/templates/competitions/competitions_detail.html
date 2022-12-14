@@ -26,7 +26,8 @@
         {% for team in competition.teams.all %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ team.team_name }}</td>
+                <td><a href="{% url 'competitions:competition_team_detail' cpk=competition.pk tpk=team.pk %}"
+                       class="btn btn-dark"> {{ team.team_name }} </a></td>
                 <td>{{ team.owner }}</td>
             </tr>
         {% endfor %}

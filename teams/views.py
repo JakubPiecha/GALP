@@ -1,9 +1,10 @@
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from teams.forms import PlayerInTeamForm
 from teams.models import Team
 from competitions.models import PlayerInTeam
 
@@ -17,11 +18,11 @@ class TeamsListView(ListView):
 
 class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Team
-    fields = ('team_name', 'owner', )
+    fields = ('team_name', 'owner',)
     template_name = 'teams/teams_add.html'
     success_url = reverse_lazy('teams:teams_list')
-    login_url = reverse_lazy('teams:teams_list')
-    permission_required = 'team.add_team'
+    login_url = reverse_lazy('login')
+    permission_required = 'teams.add_team'
 
 
 class TeamDetailView(DetailView):
@@ -36,33 +37,30 @@ class TeamUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     template_name = 'teams/team_edit.html'
     success_url = reverse_lazy('teams:teams_list')
     login_url = reverse_lazy('teams:teams_list')
-    permission_required = 'team.change_team'
+    permission_required = 'teams.change_team'
 
 
 class TeamDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Team
     success_url = reverse_lazy('teams:teams_list')
     login_url = reverse_lazy('teams:teams_list')
-    permission_required = 'team.delete_team'
+    permission_required = 'teams.delete_team'
 
 
 class AddPlayerToTeam(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = PlayerInTeam
-    fields = ('team', 'player', 'season',)
+    form_class = PlayerInTeamForm
     template_name = 'teams/add_player_team.html'
-    success_url = reverse_lazy('players:player_list')
-    login_url = reverse_lazy('teams:teams_list')
+    login_url = reverse_lazy('login')
     permission_required = 'competitions.add_playerinteam'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('teams:team_detail', kwargs={'pk': self.object.team_id})
 
 
 class DeletePlayerForTeamView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = PlayerInTeam
-    success_url = reverse_lazy('teams:teams_list')
     login_url = reverse_lazy('teams:teams_list')
     permission_required = 'competitions.delete_playerinteam'
 
-
-
-
-
-
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('teams:team_detail', kwargs={'pk': self.object.team_id})

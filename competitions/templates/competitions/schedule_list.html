@@ -17,6 +17,10 @@
 
     <h1 class="modal-title">Terminarz rozgrywek: {{ competition.competition_name }}</h1>
 
+    {% if perms.competitions.view_match %}
+        <a href="{% url 'competitions:add_match' %}" class="btn btn-success">Dodaj mecz</a>
+    {% endif %}
+
     <table class="table table-dark table-striped">
         <tr>
             <th>Nr</th>
@@ -47,7 +51,5 @@
             <h3> - Jeszcze nie dodano żadnych meczy</h3>
         {% endfor %}
     </table>
-    {% if perms.competitions.view_match %}
-        <a href="{% url 'competitions:add_match' %}" class="btn btn-success">Dodaj mecz</a>
-    {% endif %}
+
 {% endblock %}

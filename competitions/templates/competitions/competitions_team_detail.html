@@ -6,26 +6,25 @@
 
 {% block container %}
 
-    <h1> Nazwa Zespołu: {{ teams.team_name }}</h1>
-    <h1> Właściciel Zespołu: {{ teams.owner }}</h1>
-    <h3>W drużynie występowali: </h3>
+    <h1> Lista zgłoszonych zawodników drużyny {{ team.team_name }} w
+        rozgrywkach {{ competition.competition_name }} </h1>
     <table class="table table-dark table-striped">
         <tr>
             <th>Nr</th>
-            <th>Kto tu grał</th>
+            <th>Nazwa zawodnika:</th>
             {% if perms.competitions.delete_playerinteam %}
                 <th>Usuń</th>
             {% endif %}
         </tr>
-                {% for team in teams.playerinteam_set.all %}
-        <tr>
+        {% for player in players %}
+            <tr>
                 <td> {{ forloop.counter }}.</td>
-                <td>{{ team.player }} w rozgrywkach {{ team.season }}</td>
+                <td>{{ player.player.fullname }} </td>
                 {% if perms.competitions.delete_playerinteam %}
-                    <td><a href="{% url 'teams:delete_player_for_team' pk=team.pk %}" class="btn btn-danger">Usuń</a>
+                    <td><a href="{% url 'teams:delete_player_for_team' pk=player.pk %}" class="btn btn-danger">Usuń</a>
                     </td>
                 {% endif %}
-        </tr>
-                {% endfor %}
+            </tr>
+        {% endfor %}
     </table>
 {% endblock %}

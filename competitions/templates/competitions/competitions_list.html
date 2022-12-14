@@ -11,7 +11,7 @@
             <th>Nr</th>
             <th>Nazwa rozgrywek</th>
             <th>Organizator</th>
-            {% if perms.competitions.view_competitions %}
+            {% if perms.competitions.delete_competition %}
                 <th>Pole edycji</th>
                 <th>Usuń</th>
             {% endif %}
@@ -22,7 +22,7 @@
                 <td><a href="{% url 'competitions:competition_detail' competition.pk %}"
                        class="link-success">{{ competition.competition_name }}</a></td>
                 <td>{{ competition.owner }}</td>
-                {% if perms.competitions.view_competitions %}
+                {% if perms.competitions.delete_competition %}
                     <td><a href="{% url 'competitions:competition_edit' pk=competition.pk %}"
                            class="btn btn-info">Edytuj</a></td>
                     <td><a href="{% url 'competitions:competition_delete' pk=competition.pk %}"

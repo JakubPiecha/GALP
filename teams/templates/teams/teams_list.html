@@ -5,19 +5,38 @@
 {% endblock %}
 
 {% block container %}
+
     <h1 class="modal-title">Lista zespołów</h1>
-    {% for team in teams %}
-        <h2><a href="{% url 'teams:team_detail' pk=team.pk %}"
-               class="link-success">{{ forloop.counter }}. {{ team.team_name }}</a>
-            {% if perms.teams.view_teams %}
-                <a href="{% url 'teams:team_edit' pk=team.pk %}" class="btn btn-info">Edytuj</a>
-                <a href="{%  url 'teams:team_delete' pk=team.pk %}" class="btn btn-danger">Usuń</a>
+    <table class="table table-dark table-striped">
+        <tr>
+            <th>Nr</th>
+            <th>Nazwa zespołu</th>
+            <th>Właściciel</th>
+            {% if perms.teams.add_team %}
+                <th>Edytuj</th>
+                <th>Usuń</th>
             {% endif %}
-        </h2>
-    {% empty %}
-        <h3> - Jeszcze nie dodano żadnych zespołów</h3>
-    {% endfor %}
-    </ul>
+        </tr>
+        <tr>
+            {% for team in teams %}
+                <td>{{ forloop.counter }}.</td>
+
+                <td><a href="{% url 'teams:team_detail' pk=team.pk %}"
+                       class="link-success">{{ forloop.counter }}. {{ team.team_name }}</a></td>
+                <td>{{ team.owner }}.</td>
+                {% if perms.teams.view_team %}
+                    <td>
+                        <a href="{% url 'teams:team_edit' pk=team.pk %}" class="btn btn-info">Edytuj</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'teams:team_delete' pk=team.pk %}" class="btn btn-danger">Usuń</a>
+                    </td>
+                {% endif %}
+                </tr>
+            {% empty %}
+                <h3> - Jeszcze nie dodano żadnych zespołów</h3>
+            {% endfor %}
+    </table>
 
 {% endblock %}
 

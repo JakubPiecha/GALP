@@ -5,8 +5,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from players.models import Player
 from teams.models import Team
-from .models import Competition, Match
+from .forms import CompetitionForm, MatchForm
+from .models import Competition, Match, PlayerInTeam
 
 
 # Create your views here.
@@ -24,29 +26,45 @@ class CompetitionDetailView(DetailView):
     context_object_name = 'competition'
 
 
+class CompetitionTeamDetailView(View):
+
+    def get(self, request, cpk, tpk):
+        players = PlayerInTeam.objects.filter(season_id=cpk, team_id=tpk)
+        competition = Competition.objects.get(pk=cpk)
+        team = Team.objects.get(pk=tpk)
+        return render(
+            request,
+            "competitions/competitions_team_detail.html",
+            context={
+                'competition': competition,
+                'team': team,
+                'players': players,
+            })
+
+
+
 class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = Competition
-    fields = ('competition_name', 'teams', 'type', 'owner')
+    form_class = CompetitionForm
     template_name = 'competitions/competition_create.html'
     success_url = reverse_lazy('competitions:competition_list')
     login_url = reverse_lazy('competitions:competition_list')
-    permission_required = 'competition.add_competition'
+    permission_required = 'competitions.add_competition'
 
 
 class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    form_class = CompetitionForm
     model = Competition
-    fields = ('competition_name', 'teams', 'type', 'owner')
     template_name = 'competitions/competition_edit.html'
     success_url = reverse_lazy('competitions:competition_list')
     login_url = reverse_lazy('competitions:competition_list')
-    permission_required = 'competition.change_competition'
+    permission_required = 'competitions.change_competition'
 
 
 class CompetitionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Competition
     success_url = reverse_lazy('competitions:competition_list')
     login_url = reverse_lazy('competitions:competition_list')
-    permission_required = 'competition.delete_competition'
+    permission_required = 'competitions.delete_competition'
 
 
 class MatchScheduleView(DetailView):
@@ -56,28 +74,33 @@ class MatchScheduleView(DetailView):
 
 
 class MatchCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = Match
-    fields = ('match_date', 'home_team', 'away_team', 'competition', 'home_goal', 'away_goal')
-    success_url = reverse_lazy('competitions:competition_list')
+    form_class = MatchForm
     login_url = reverse_lazy('competitions:competition_list')
     template_name = 'competitions/add_match.html'
-    permission_required = 'competition.add_match'
+    permission_required = 'competitions.add_match'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('competitions:schedule_list', kwargs={'pk': self.object.competition_id})
 
 
 class MatchUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Match
-    fields = ('match_date', 'home_team', 'away_team', 'competition', 'home_goal', 'away_goal')
-    success_url = reverse_lazy('competitions:competition_list')
+    form_class = MatchForm
     login_url = reverse_lazy('competitions:competition_list')
     template_name = 'competitions/edit_match.html'
-    permission_required = 'competition.change_match'
+    permission_required = 'competitions.change_match'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('competitions:schedule_list', kwargs={'pk': self.object.competition_id})
 
 
 class MatchDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = Match
-    success_url = reverse_lazy('competitions:competition_list')
     login_url = reverse_lazy('competitions:competition_list')
-    permission_required = 'competition.delete_match'
+    permission_required = 'competitions.delete_match'
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('competitions:schedule_list', kwargs={'pk': self.object.competition_id})
 
 
 class CompetitionTableLeagueView(View):

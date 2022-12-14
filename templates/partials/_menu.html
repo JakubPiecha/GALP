@@ -33,7 +33,7 @@
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                         <li><a class="dropdown-item active" href="{% url 'competitions:competition_list' %}">Lista
                             rozgrywek</a></li>
-                        {% if perms.competitions.view_competitions %}
+                        {% if perms.competitions.add_competition %}
                             <li><a class="dropdown-item" href="{% url 'competitions:competition_create' %}">Dodaj
                                 rozgrywki</a></li>
                         {% endif %}
@@ -47,12 +47,11 @@
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                         <li><a class="dropdown-item active" href="{% url 'teams:teams_list' %}">Lista
                             Zespołów</a></li>
-                        {% if perms.teams.view_teams %}
                             <li><a class="dropdown-item" href="{% url 'teams:team_add' %}">Dodaj
                                 Zespół</a></li>
-                            <li><a class="dropdown-item" href="{% url 'teams:add_player_to_team' %}">Dodaj zawodnika do zespołu</a>
+                            <li><a class="dropdown-item" href="{% url 'teams:add_player_to_team' %}">Dodaj zawodnika do
+                                zespołu</a>
                             </li>
-                        {% endif %}
                     </ul>
                 </div>
                 <div class="dropdown">
@@ -62,7 +61,7 @@
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                         <li><a class="dropdown-item active" href="{% url 'players:player_list' %}">Lista
                             Zawodników</a></li>
-                        {% if perms.players.view_players %}
+                        {% if perms.players.add_player %}
                             <li><a class="dropdown-item" href="{% url 'players:player_add' %}">Dodaj Zawodnika</a></li>
                         {% endif %}
                     </ul>

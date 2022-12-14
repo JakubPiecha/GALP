@@ -6,6 +6,7 @@ app_name = 'competitions'
 
 urlpatterns = [
     path('', views.CompetitionListView.as_view(), name='competition_list'),
+    path('<int:cpk>/team/<int:tpk>/', views.CompetitionTeamDetailView.as_view(), name='competition_team_detail'),
     path('<int:pk>/', views.CompetitionDetailView.as_view(), name='competition_detail'),
     path('create/', views.CompetitionCreateView.as_view(), name='competition_create'),
     path('edit/<int:pk>/', views.CompetitionUpdateView.as_view(), name='competition_edit'),

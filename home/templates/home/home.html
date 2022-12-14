@@ -6,12 +6,12 @@
 {% endblock %}
 
 {% block container %}
-<h1>Homepage</h1>
     {% if user.is_authenticated %}
 
-    Hi {{ user.username }}
-    {%  else %}
-    <p>Jesteś nie zalogowany</p>
+    <h3>Witaj, {{ user.username }} na stronie rozgrywek GALP. </h3>
+    {% else %}
+
+    <h3>Witaj, nieznajomy na stronie rozgrywek GALP. </h3>
     <a href="{% url 'login' %}" class="btn btn-primary">Zaloguj się</a>
     {% endif %}
 
