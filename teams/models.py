@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+from django.urls import reverse
 # Create your models here.
 
 
@@ -10,3 +10,6 @@ class Team(models.Model):
 
     def __str__(self):
         return self.team_name
+
+    def get_absolute_url(self):
+        return reverse('teams:team_detail', args=[str(self.id)])

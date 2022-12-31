@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 
 
 class HomeView(TemplateView):
+    '''
+    This view is used to display the home page
+    '''
     template_name = 'home/home.html'
-
-

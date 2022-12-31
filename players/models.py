@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 # Create your models here.
@@ -8,3 +9,6 @@ class Player(models.Model):
 
     def __str__(self):
         return self.fullname
+
+    def get_absolute_url(self):
+        return reverse('players:player_detail', args=[str(self.id)])

@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.urls import reverse
 from teams.models import Team
 from players.models import Player
 
@@ -15,6 +16,8 @@ class Competition(models.Model):
 
     def __str__(self):
         return self.competition_name
+    def get_absolute_url(self):
+        return reverse('competitions:competition_detail', args=[str(self.id)])
 
 
 class Match(models.Model):
@@ -28,10 +31,11 @@ class Match(models.Model):
     away_goal = models.PositiveIntegerField(blank=True, null=True, verbose_name='Bramki gości')
 
 
+
 class PlayerInTeam(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE, verbose_name='Zespół w którym występuje:')
     player = models.ForeignKey(Player, on_delete=models.CASCADE, verbose_name='Nazwa zawodnika:')
     season = models.ForeignKey(Competition, on_delete=models.CASCADE, verbose_name='W rozgrywkach:' )
-    #
-    # def __str__(self):
-    #     return f'{self.player.fullname} w rozgrywkach {self.season.competition_name} zgłoszony jest przez {self.team.team_name}'
+
+    def __str__(self):
+        return f'{self.player.fullname} w rozgrywkach {self.season.competition_name} zgłoszony jest przez {self.team.team_name}'

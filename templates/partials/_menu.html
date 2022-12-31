@@ -61,9 +61,9 @@
                     <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
                         <li><a class="dropdown-item active" href="{% url 'players:player_list' %}">Lista
                             Zawodników</a></li>
-                        {% if perms.players.add_player %}
+{#                        {% if perms.players.add_player %}#}
                             <li><a class="dropdown-item" href="{% url 'players:player_add' %}">Dodaj Zawodnika</a></li>
-                        {% endif %}
+{#                        {% endif %}#}
                     </ul>
                 </div>
             </ul>
