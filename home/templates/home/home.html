@@ -8,10 +8,76 @@
 {% block container %}
     {% if user.is_authenticated %}
 
-    <h3>Witaj, {{ user.username }} na stronie rozgrywek GALP. </h3>
+    <h3>Witaj, {{ user.username }} na stronie organizacji rozgrywek. </h3>
+
+
+    <h1 class="modal-title">Moje zespoły</h1>
+    <table class="table table-dark table-striped">
+        <tr>
+            <th>Nr</th>
+            <th>Nazwa zespołu</th>
+            <th>Właściciel</th>
+            {% if perms.teams.delete_team %}
+                <th>Edytuj</th>
+                <th>Usuń</th>
+            {% endif %}
+        </tr>
+        <tr>
+            {% for team in user_team %}
+                <td>{{ forloop.counter }}.</td>
+                <td><a href="{% url 'teams:team_detail' pk=team.pk %}"
+                       class="btn btn-dark">{{ team.team_name }}</a></td>
+                <td>{{ team.owner }}</td>
+                {% if perms.teams.delete_team %}
+                    <td>
+                        <a href="{% url 'teams:team_edit' pk=team.pk %}" class="btn btn-info">Edytuj</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'teams:team_delete' pk=team.pk %}" class="btn btn-danger">Usuń</a>
+                    </td>
+                {% endif %}
+                </tr>
+            {% empty %}
+                <h3> - Jeszcze nie dodano żadnych zespołów</h3>
+            {% endfor %}
+    </table>
+
+        <a href="{% url 'teams:team_add' %}" class="btn btn-success">Dodaj Zespół</a>
+
+
+    <h1 class="modal-title">Moje rozgrywki:</h1>
+    <table class="table table-dark  table-striped">
+        <tr>
+            <th>Nr</th>
+            <th>Nazwa rozgrywek</th>
+            <th>Organizator</th>
+            {% if perms.competitions.delete_competition %}
+                <th>Pole edycji</th>
+                <th>Usuń</th>
+            {% endif %}
+        </tr>
+        {% for competition in user_competition %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td><a href="{% url 'competitions:competition_detail' competition.pk %}"
+                       class="btn btn-dark">{{ competition.competition_name }}</a></td>
+                <td>{{ competition.owner }}</td>
+                {% if perms.competitions.delete_competition %}
+                    <td><a href="{% url 'competitions:competition_edit' pk=competition.pk %}"
+                           class="btn btn-info">Edytuj</a></td>
+                    <td><a href="{% url 'competitions:competition_delete' pk=competition.pk %}"
+                           class="btn btn-danger">Usuń</a></td>
+                {% endif %}
+            </tr>
+        {% empty %}
+            <h3> - Jeszcze nie dodano żadnych rozgrywek</h3>
+        {% endfor %}
+    </table>
+            <a href="{% url 'competitions:competition_create' %}" class="btn btn-success">Dodaj rozgrywki</a>
+
     {% else %}
 
-    <h3>Witaj, nieznajomy na stronie rozgrywek GALP. </h3>
+    <h3>Witaj, nieznajomy na stronie menagera rozgrywek. </h3>
     <a href="{% url 'login' %}" class="btn btn-primary">Zaloguj się</a>
     {% endif %}
 

@@ -1,6 +1,6 @@
 from django import forms
 
-from competitions.models import PlayerInTeam
+from competitions.models import PlayerInTeam, Competition
 from teams.models import Team
 
 
@@ -9,6 +9,18 @@ class PlayerInTeamForm(forms.ModelForm):
     class Meta:
         model = PlayerInTeam
         fields = ('team', 'player', 'season')
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super(PlayerInTeamForm, self).__init__(*args, **kwargs)
+        if not user.is_staff:
+            if len(Competition.objects.filter(owner=user)) == 0:
+                print(Competition.objects.filter(owner=user))
+                self.fields['team'].queryset = Team.objects.filter(owner=user)
+                self.fields['season'].queryset = Competition.objects.filter(teams__in=Team.objects.filter(owner=user))
+            else:
+                self.fields['team'].queryset = Team.objects.filter(competition__owner_id=user).distinct()
+                self.fields['season'].queryset = Competition.objects.filter(owner=user)
 
     def clean(self):
         team = self.cleaned_data['team']
