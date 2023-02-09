@@ -74,9 +74,10 @@ class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateV
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        user = get_user_model().objects.get(username=form.cleaned_data['owner'])
-        group = Group.objects.get(name=os.environ.get('DJ_GROUP_COMPETITION_OWNER'))
-        user.groups.add(group)
+        if form.cleaned_data['owner']:
+            group = Group.objects.get(name=os.environ.get('DJ_GROUP_COMPETITION_OWNER'))
+            user = get_user_model().objects.get(username=form.cleaned_data['owner'])
+            user.groups.add(group)
         self.object.save()
         return super(CompetitionUpdateView, self).form_valid(form)
 

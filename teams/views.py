@@ -66,14 +66,21 @@ class TeamUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         if obj.owner == self.request.user or self.request.user.is_staff:
             return super(TeamUpdateView, self).dispatch(request, *args, **kwargs)
         else:
-            messages.error(request, 'Tylko właściciel lub administrator może edytować zespół!')
+            messages.error(request,
+                        '''
+                        Tylko właściciel lub administrator może edytować zespół!
+                        Jeśli nie możesz zedytować swojej drużyny skontaktuj się z Administratorem strony.
+                        '''
+                        )
             return redirect('teams:teams_list')
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        user = get_user_model().objects.get(username=form.cleaned_data['owner'])
         group = Group.objects.get(name=os.environ.get('DJ_GROUP_TEAM_OWNER'))
-        user.groups.add(group)
+        print(form.cleaned_data['owner'])
+        if form.cleaned_data['owner']:
+            user = get_user_model().objects.get(username=form.cleaned_data['owner'])
+            user.groups.add(group)
         self.object.save()
         return redirect(reverse_lazy('teams:teams_list'))
 

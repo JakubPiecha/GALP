@@ -54,8 +54,8 @@ def test_add_team_get_no_perm(user_no_perm):
     client = Client()
     client.force_login(user_no_perm)
     response = client.get(reverse('teams:team_add'))
-    assert response.status_code == 403
-    assert '403 Forbidden' in response.content.decode('UTF-8')
+    assert response.status_code == 200
+    assert 'Dodawanie Zespołu' in response.content.decode('UTF-8')
 
 
 def test_add_team_post(db, client, user):
@@ -72,7 +72,7 @@ def test_add_team_get(client, user):
     assert response.status_code == 200
 
 
-def test_edit_team_post(db, client, user):
+def test_edit_team_post(db, user, client):
     team = Team.objects.create(team_name='TeamA', owner=user)
     response = client.post(reverse('teams:team_edit', kwargs={'pk': team.id}),
                            {'team_name': 'TeamZ'})
@@ -96,13 +96,13 @@ def test_edit_team_get_no_login(db):
     assert response.url.startswith(reverse('teams:teams_list'))
 
 
-def test_edit_team_get_no_permision(db, user_no_perm):
+def test_edit_team_get_no_permission(db, user_no_perm, user):
     client = Client()
     client.force_login(user_no_perm)
-    team = Team.objects.create(team_name='TeamA')
+    team = Team.objects.create(team_name='TeamA', owner=user)
     response = client.get(reverse('teams:team_edit', kwargs={'pk': team.id}))
-    assert response.status_code == 403
-    assert '403 Forbidden' in response.content.decode('UTF-8')
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('teams:teams_list'))
 
 
 def test_delete_team_post(db, client, user):
