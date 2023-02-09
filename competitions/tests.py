@@ -66,8 +66,8 @@ def test_add_competition_get_no_perm(user_no_perm):
     client = Client()
     client.force_login(user_no_perm)
     response = client.get(reverse('competitions:competition_create'))
-    assert response.status_code == 403
-    assert '403 Forbidden' in response.content.decode('UTF-8')
+    assert response.status_code == 200
+    assert 'Tworzenie rozgrywek' in response.content.decode('UTF-8')
 
 
 def test_add_competition_post(db, client, user):
@@ -88,8 +88,8 @@ def test_add_competition_get(client, user):
 
 def test_edit_competition_get(db, client, user, competition):
     response = client.get(reverse('competitions:competition_edit', kwargs={'pk': competition.id}))
-    assert response.status_code == 200
-    assert 'test season' in str(response.content)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('competitions:competition_list'))
 
 
 def test_edit_competition_get_no_login(db, competition):
@@ -99,11 +99,11 @@ def test_edit_competition_get_no_login(db, competition):
     assert response.url.startswith(reverse('competitions:competition_list'))
 
 
-def test_edit_competition_post(db, client, user, competition, user_no_perm):
+def test_edit_competition_post(db, client, user, competition_user, user_no_perm):
     team_g = Team.objects.create(team_name='TeamG', owner=user_no_perm)
     team_f = Team.objects.create(team_name='TeamF', owner=user_no_perm)
     data = {'competition_name': 'Season', 'teams': [team_g.id, team_f.id], 'owner': user.id}
-    response = client.post(reverse('competitions:competition_edit', kwargs={'pk': competition.id}), data)
+    response = client.post(reverse('competitions:competition_edit', kwargs={'pk': competition_user.id}), data)
     assert response.status_code == 302
     assert Competition.objects.get(competition_name='Season')
     assert response.url.startswith(reverse('competitions:competition_list'))
@@ -117,8 +117,8 @@ def test_edit_competition_get_no_permission(db, user_no_perm, competition):
     assert '403 Forbidden' in response.content.decode('UTF-8')
 
 
-def test_delete_competition_post(db, client, user, competition):
-    response = client.post(reverse('competitions:competition_delete', kwargs={'pk': competition.id}))
+def test_delete_competition_post(db, client, user, competition_user):
+    response = client.post(reverse('competitions:competition_delete', kwargs={'pk': competition_user.id}))
     assert response.status_code == 302
     assert list(Competition.objects.all()) == list(Competition.objects.none())
     assert response.url.startswith(reverse('competitions:competition_list'))

@@ -10,6 +10,7 @@
         <tr>
             <th>Nr</th>
             <th>Nazwa Zawodnika</th>
+        <th>Data urodzenia</th>
             {% if perms.players.add_player %}
                 <th>Edytuj</th>
                 <th>Usuń</th>
@@ -20,7 +21,9 @@
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td><a href="{% url 'players:player_detail' pk=player.pk %}"
-                       class="link-success">{{ forloop.counter }}. {{ player.fullname }} </a></td>
+                       class="btn btn-dark">{{ player.fullname }} </a></td>
+                <td><a href="{% url 'players:player_detail' pk=player.pk %}"
+                       class="btn btn-dark">{{ player.date_of_birth }} </a></td>
                 {% if perms.players.add_player %}
                     <td><a href="{% url 'players:player_edit' pk=player.pk %}" class="btn btn-info">Edytuj</a></td>
                     <td><a href="{% url 'players:player_delete' pk=player.pk %}" class="btn btn-danger">Usuń</a></td>

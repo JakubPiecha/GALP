@@ -1,6 +1,11 @@
+import os
+
 from django import forms
+from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
+from django.contrib.auth.models import Permission, Group
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -29,27 +34,52 @@ class CompetitionDetailView(DetailView):
     context_object_name = 'competition'
 
 
-class CompetitionCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class CompetitionCreateView(LoginRequiredMixin, CreateView):
     '''
     View of the competition creating form
     '''
     form_class = CompetitionForm
-    template_name = 'competitions/competition_create.html'
     success_url = reverse_lazy('competitions:competition_list')
+    template_name = 'competitions/competition_create.html'
     login_url = reverse_lazy('login')
-    permission_required = 'competitions.add_competition'
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        user = get_user_model().objects.get(username=self.request.user)
+        group = Group.objects.get(name=os.environ.get('DJ_GROUP_COMPETITION_OWNER'))
+        user.groups.add(group)
+        self.object.owner = self.request.user
+        self.object.save()
+        return super(CompetitionCreateView, self).form_valid(form)
 
 
 class CompetitionUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     '''
     View of the competition edit form
     '''
-    form_class = CompetitionForm
+    fields = ('competition_name', 'teams', 'owner')
     model = Competition
     template_name = 'competitions/competition_edit.html'
     success_url = reverse_lazy('competitions:competition_list')
     login_url = reverse_lazy('competitions:competition_list')
     permission_required = 'competitions.change_competition'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner == self.request.user or self.request.user.is_staff:
+            return super(CompetitionUpdateView, self).dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request, 'Tylko właściciel lub administrator może edytować rozgrywki!')
+            return redirect('competitions:competition_list')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        if form.cleaned_data['owner']:
+            group = Group.objects.get(name=os.environ.get('DJ_GROUP_COMPETITION_OWNER'))
+            user = get_user_model().objects.get(username=form.cleaned_data['owner'])
+            user.groups.add(group)
+        self.object.save()
+        return super(CompetitionUpdateView, self).form_valid(form)
 
 
 class CompetitionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
@@ -60,6 +90,14 @@ class CompetitionDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteV
     success_url = reverse_lazy('competitions:competition_list')
     login_url = reverse_lazy('competitions:competition_list')
     permission_required = 'competitions.delete_competition'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner == self.request.user or self.request.user.is_staff:
+            return super(CompetitionDeleteView, self).dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request, 'Tylko właściciel lub administrator może usunąć rozgrywki!')
+            return redirect('competitions:competition_list')
 
 
 class CompetitionTeamDetailView(View):

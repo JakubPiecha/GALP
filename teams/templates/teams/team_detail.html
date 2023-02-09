@@ -12,20 +12,37 @@
     <table class="table table-dark table-striped">
         <tr>
             <th>Nr</th>
-            <th>Kto tu grał</th>
+            <th>Kto tu grał i w jakich rozgrywkach</th>
             {% if perms.competitions.delete_playerinteam %}
                 <th>Usuń</th>
             {% endif %}
         </tr>
-                {% for team in teams.playerinteam_set.all %}
-        <tr>
+        {% for team in teams.playerinteam_set.all %}
+            <tr>
                 <td> {{ forloop.counter }}.</td>
                 <td>{{ team.player }} w rozgrywkach {{ team.season }}</td>
                 {% if perms.competitions.delete_playerinteam %}
                     <td><a href="{% url 'teams:delete_player_for_team' pk=team.pk %}" class="btn btn-danger">Usuń</a>
                     </td>
                 {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+
+
+    <h3>Drużyna gra w rozgrywkach: </h3>
+    <table class="table table-dark table-striped">
+        <tr>
+            <th>Nr</th>
+            <th>Nazwa Rozgrywek:</th>
         </tr>
-                {% endfor %}
+        {% for team in teams.competition_set.all %}
+            <tr>
+                <td> {{ forloop.counter }}.</td>
+                <td> {{ team.competition_name }}</td>
+                <td><a href="{% url 'teams:delete_player_for_team' pk=team.pk %}" class="btn btn-danger">Usuń</a>
+                </td>
+            </tr>
+        {% endfor %}
     </table>
 {% endblock %}

@@ -61,6 +61,14 @@ def team_w(db, user_no_perm):
     team_w = Team.objects.create(team_name='TeamW', owner=user_no_perm)
     return team_w
 
+
+@pytest.fixture
+def competition_user(db, team_q, team_w, user):
+    teams = Team.objects.all()
+    competition = Competition.objects.create(competition_name='test season', owner=user)
+    competition.teams.set(teams)
+    return competition
+
 @pytest.fixture
 def game(db):
     team_o = Team.objects.create(team_name='TeamO')

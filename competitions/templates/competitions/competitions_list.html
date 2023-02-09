@@ -6,6 +6,13 @@
 
 {% block container %}
     <h1 class="modal-title">Lista rozgrywek:</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
     <table class="table table-dark  table-striped">
         <tr>
             <th>Nr</th>
@@ -20,7 +27,7 @@
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td><a href="{% url 'competitions:competition_detail' competition.pk %}"
-                       class="link-success">{{ competition.competition_name }}</a></td>
+                       class="btn btn-dark">{{ competition.competition_name }}</a></td>
                 <td>{{ competition.owner }}</td>
                 {% if perms.competitions.delete_competition %}
                     <td><a href="{% url 'competitions:competition_edit' pk=competition.pk %}"

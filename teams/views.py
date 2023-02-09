@@ -1,5 +1,9 @@
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import render
+import os
+
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
@@ -18,16 +22,23 @@ class TeamsListView(ListView):
     context_object_name = 'teams'
 
 
-class TeamCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+class TeamCreateView(LoginRequiredMixin, CreateView):
     '''
     View of the team creating form
     '''
     model = Team
-    fields = ('team_name', 'owner',)
+    fields = ('team_name',)
     template_name = 'teams/teams_add.html'
-    success_url = reverse_lazy('teams:teams_list')
     login_url = reverse_lazy('login')
-    permission_required = 'teams.add_team'
+
+    def form_valid(self, form):
+        user = get_user_model().objects.get(username=self.request.user)
+        group = Group.objects.get(name=os.environ.get('DJ_GROUP_TEAM_OWNER'))
+        user.groups.add(group)
+        self.object = form.save(commit=False)
+        self.object.owner = self.request.user
+        self.object.save()
+        return redirect(reverse_lazy('teams:teams_list'))
 
 
 class TeamDetailView(DetailView):
@@ -50,6 +61,29 @@ class TeamUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     login_url = reverse_lazy('teams:teams_list')
     permission_required = 'teams.change_team'
 
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner == self.request.user or self.request.user.is_staff:
+            return super(TeamUpdateView, self).dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request,
+                        '''
+                        Tylko właściciel lub administrator może edytować zespół!
+                        Jeśli nie możesz zedytować swojej drużyny skontaktuj się z Administratorem strony.
+                        '''
+                        )
+            return redirect('teams:teams_list')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        group = Group.objects.get(name=os.environ.get('DJ_GROUP_TEAM_OWNER'))
+        print(form.cleaned_data['owner'])
+        if form.cleaned_data['owner']:
+            user = get_user_model().objects.get(username=form.cleaned_data['owner'])
+            user.groups.add(group)
+        self.object.save()
+        return redirect(reverse_lazy('teams:teams_list'))
+
 
 class TeamDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     '''
@@ -59,6 +93,14 @@ class TeamDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     success_url = reverse_lazy('teams:teams_list')
     login_url = reverse_lazy('teams:teams_list')
     permission_required = 'teams.delete_team'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.owner == self.request.user or self.request.user.is_staff:
+            return super(TeamDeleteView, self).dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request, 'Tylko właściciel lub administrator może usunąć zespół!')
+            return redirect('teams:teams_list')
 
 
 class AddPlayerToTeam(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
@@ -70,6 +112,11 @@ class AddPlayerToTeam(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     template_name = 'teams/add_player_team.html'
     login_url = reverse_lazy('login')
     permission_required = 'competitions.add_playerinteam'
+
+    def get_form_kwargs(self):
+        kwargs = super(AddPlayerToTeam, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('teams:team_detail', kwargs={'pk': self.object.team_id})
