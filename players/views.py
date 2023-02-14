@@ -1,8 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
-
 from .forms import PlayerForm
 from .models import Player
 # Create your views here.
@@ -24,7 +22,7 @@ class PlayerCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     form_class = PlayerForm
     template_name = 'players/players_add.html'
     success_url = reverse_lazy('players:player_list')
-    login_url = reverse_lazy('players:player_list')
+    login_url = reverse_lazy('login')
     permission_required = 'players.add_player'
 
 

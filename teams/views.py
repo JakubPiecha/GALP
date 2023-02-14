@@ -77,7 +77,6 @@ class TeamUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         group = Group.objects.get(name=os.environ.get('DJ_GROUP_TEAM_OWNER'))
-        print(form.cleaned_data['owner'])
         if form.cleaned_data['owner']:
             user = get_user_model().objects.get(username=form.cleaned_data['owner'])
             user.groups.add(group)

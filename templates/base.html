@@ -24,14 +24,21 @@
 
 
 </head>
-<body>
+<body class="bg-secondary ">
+
 
 {% include './partials/_menu.html' %}
-<div class="container">
+<div class="container flex-lg-wrap" >
     {% block container %}
 
     {% endblock %}
 </div>
-
+<footer class="bg-dark text-center text-lg-start"  >
+  <!-- Copyright -->
+  <div class="text-center text-light fixed-bottom" style="background-color: rgba(0, 0, 0, 0.2);" >
+    © 2022-2023 Copyright: Jakub Piecha
+  </div>
+  <!-- Copyright -->
+</footer>
 </body>
 </html>

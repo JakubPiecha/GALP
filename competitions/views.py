@@ -1,16 +1,13 @@
 import os
-
-from django import forms
+from random import shuffle
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.contrib.auth.models import Permission, Group
+from django.contrib.auth.models import Group
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-
-from players.models import Player
 from teams.models import Team
 from .forms import CompetitionForm, MatchForm
 from .models import Competition, Match, PlayerInTeam
@@ -128,6 +125,28 @@ class MatchScheduleView(DetailView):
     template_name = 'competitions/schedule_list.html'
     context_object_name = 'competition'
 
+    def post(self, request, pk):
+        teams = list(Team.objects.filter(competition=pk).values_list('id', flat=True))
+        shuffle(teams)
+        if len(teams) % 2 != 0:
+            teams.append(-1)
+        if 'one_round' in request.POST:
+            if len(Match.objects.filter(competition_id=pk)) == 0:
+                create_schedule_one_round(teams, pk)
+            else:
+                type_schedule = 'one_round'
+                request.session['type_schedule'] = type_schedule
+                return redirect('competitions:competition_confirm', pk)
+            return redirect('competitions:schedule_list', pk)
+        elif 'two_round' in request.POST:
+            if len(Match.objects.filter(competition_id=pk)) == 0:
+                create_schedule_two_round(teams, pk)
+            else:
+                type_schedule = 'two_round'
+                request.session['type_schedule'] = type_schedule
+                return redirect('competitions:competition_confirm', pk)
+            return redirect('competitions:schedule_list', pk)
+
 
 class MatchCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     '''
@@ -141,6 +160,7 @@ class MatchCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     def get_success_url(self, **kwargs):
         return reverse_lazy('competitions:schedule_list', kwargs={'pk': self.object.competition_id})
 
+# TODO default tournament name and team filter and add more statistic to game (player score, cards etc.)
 
 class MatchUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     '''
@@ -206,3 +226,59 @@ class CompetitionTableLeagueView(View):
                 'table_league': table_league,
                 'table': table,
             })
+# TODO add more statistic to table
+
+class ConfirmView(View):
+
+    def get(self, request, pk):
+        competition = Competition.objects.get(id=pk)
+        return render(request, 'competitions/schedule_confirm.html', context={'competition': competition})
+
+    def post(self, request, pk):
+        teams = list(Team.objects.filter(competition=pk).values_list('id', flat=True))
+        shuffle(teams)
+        if len(teams) % 2 != 0:
+            teams.append(-1)
+        Match.objects.filter(competition_id=pk).delete()
+        if request.session['type_schedule'] == 'one_round':
+            create_schedule_one_round(teams, pk)
+        elif request.session['type_schedule'] == 'two_round':
+            create_schedule_two_round(teams, pk)
+        return redirect('competitions:schedule_list', pk)
+
+
+def next_move(teams):
+    return [teams[0]] + [teams[-1]] + teams[1:-1]
+
+
+def create_match_a(teams, pk):
+    round = list(zip(teams[:len(teams) // 2], teams[-1:len(teams) // 2 - 1:-1]))
+    for game in round:
+        if game[0] != -1 and game[1] != -1:
+            Match.objects.create(home_team_id=game[0], away_team_id=game[1], competition_id=pk)
+
+
+def create_match_b(teams, pk):
+    round = list(zip(teams[-1:len(teams) // 2 - 1:-1], teams[:len(teams) // 2]))
+    for game in round:
+        if game[0] != -1 and game[1] != -1:
+            Match.objects.create(home_team_id=game[0], away_team_id=game[1], competition_id=pk)
+
+
+def create_schedule_one_round(teams, pk):
+    for games in range(len(teams) // 2):
+        if games < len(teams) // 2 - 1:
+            create_match_a(teams, pk)
+            teams = next_move(teams)
+            create_match_b(teams, pk)
+            teams = next_move(teams)
+        else:
+            create_match_a(teams, pk)
+
+
+def create_schedule_two_round(teams, pk):
+    for games in range(len(teams) - 1):
+        create_match_b(teams, pk)
+        teams = next_move(teams)
+        create_match_a(teams, pk)
+        teams = next_move(teams)

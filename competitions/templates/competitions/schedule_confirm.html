@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}
+    Generowanie terminarza
+{% endblock %}
+{% block container %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2>Powtórne Generowanie terminarza</h2>
+        <h3 class="alert-danger">Czy na pewno chcesz na now wygenerować terminarz? Generowanie nowego terminarza, że
+            wszystkie dotychczasowe mecze oraz wyniki zostaną bezpowrotnie usunięte!</h3>
+        <button type="button" class="btn btn-warning">
+            <a href="{% url 'competitions:schedule_list' pk=competition.id %}">Anuluj</a>
+        </button>
+        <button type="submit" class="btn btn-danger">Potwierdź</button>
+    </form>
+
+
+
+{% endblock %}
