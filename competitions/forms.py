@@ -11,12 +11,12 @@ class CompetitionForm(forms.ModelForm):
 
 
 class MatchForm(forms.ModelForm):
+    match_date = forms.DateTimeField(label='Data meczu', required=False,
+                                     widget=forms.DateTimeInput(attrs={'placeholder': 'RRRR-MM-DD GG-MM-SS'}))
+
     class Meta:
         model = Match
         fields = ('match_date', 'home_team', 'away_team', 'competition', 'home_goal', 'away_goal')
-
-
-
 
     def clean(self):
         team_home = self.cleaned_data['home_team']

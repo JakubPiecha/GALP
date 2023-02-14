@@ -15,7 +15,6 @@ class PlayerInTeamForm(forms.ModelForm):
         super(PlayerInTeamForm, self).__init__(*args, **kwargs)
         if not user.is_staff:
             if len(Competition.objects.filter(owner=user)) == 0:
-                print(Competition.objects.filter(owner=user))
                 self.fields['team'].queryset = Team.objects.filter(owner=user)
                 self.fields['season'].queryset = Competition.objects.filter(teams__in=Team.objects.filter(owner=user))
             else:

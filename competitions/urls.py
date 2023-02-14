@@ -16,4 +16,5 @@ urlpatterns = [
     path('edit/match/<int:pk>/', views.MatchUpdateView.as_view(), name='edit_match'),
     path('delete/match/<int:pk>/', views.MatchDeleteView.as_view(), name='delete_match'),
     path('delete/<int:pk>/', views.CompetitionDeleteView.as_view(), name='competition_delete'),
+    path('confirm/<int:pk>/type_schedule', views.ConfirmView.as_view(), name='competition_confirm'),
 ]

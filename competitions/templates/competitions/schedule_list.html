@@ -17,19 +17,29 @@
 
     <h1 class="modal-title">Terminarz rozgrywek: {{ competition.competition_name }}</h1>
 
-    {% if perms.competitions.view_match %}
+    {% if perms.competitions.add_match and user == competition.owner or user.is_staff %}
+        <div class="btn-group btn-group-lg" role="group" aria-label="Basic example">
+            <form action="" method="post">
+                {% csrf_token %}
+                <button type="submit" name="one_round" class="btn btn-success">Generuj terminarz (jedna runda)</button>
+            </form>
+            <form action="" method="post">
+                {% csrf_token %}
+                <button type="submit" name="two_round" class="btn btn-success">Generuj terminarz (dwie rundy)</button>
+            </form>
+        </div>
         <a href="{% url 'competitions:add_match' %}" class="btn btn-success">Dodaj mecz</a>
     {% endif %}
 
-    <table class="table table-dark table-striped">
+    <table class="table table-dark table-striped text-center">
         <tr>
             <th>Nr</th>
             <th>Data</th>
             <th>Gospodarz</th>
             <th>Gość</th>
-            <th>Bramki Gospodarzy</th>
-            <th>Bramki Gości</th>
-            {% if perms.competitions.view_match %}
+            <th class="col-auto">Bramki Gospodarzy</th>
+            <th class="col-auto">Bramki Gości</th>
+            {% if perms.competitions.add_match and user == competition.owner or user.is_staff %}
                 <th>Dodaj wynik</th>
                 <th>Usuń spotkanie</th>
             {% endif %}
@@ -42,7 +52,7 @@
                 <td>{{ match.away_team }}</td>
                 <td>{% if match.home_goal == None %} - {% else %} {{ match.home_goal }}{% endif %} </td>
                 <td> {% if match.away_goal == None %} - {% else %} {{ match.away_goal }}{% endif %} </td>
-                {% if perms.competitions.view_match %}
+                {% if perms.competitions.add_match and user == competition.owner or user.is_staff %}
                     <td><a href="{% url 'competitions:edit_match' pk=match.pk %}" class="btn btn-info">Edytuj</a></td>
                     <td><a href="{% url 'competitions:delete_match' pk=match.pk %}" class="btn btn-danger">Usuń</a></td>
                 {% endif %}

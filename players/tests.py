@@ -50,7 +50,7 @@ def test_create_player_get_no_login():
     client = Client()
     response = client.get(reverse('players:player_add'))
     assert response.status_code == 302
-    assert response.url.startswith(reverse('players:player_list'))
+    assert response.url.startswith(reverse('login'))
 
 def test_add_palyer_get_no_perm(user_no_perm):
     client = Client()
