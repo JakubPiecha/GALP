@@ -78,10 +78,19 @@ To run this project, you will need to add the following environment variables to
 
 
 ```bash
-python manage.py migrate
-python manage.py runserver
+python manage.py loaddata ./fixtures/data.json
 ```
 
+You can load sample data into the database
+
+```bash
+python manage.py loaddata ./fixtures/data.json
+```
+Start app
+
+```bash
+python manage.py runserver
+```
 ## Features
 
 - adding more stats
