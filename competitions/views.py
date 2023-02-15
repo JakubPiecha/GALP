@@ -159,7 +159,6 @@ class MatchCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
 
     def get_success_url(self, **kwargs):
         return reverse_lazy('competitions:schedule_list', kwargs={'pk': self.object.competition_id})
-
 # TODO default tournament name and team filter and add more statistic to game (player score, cards etc.)
 
 class MatchUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
